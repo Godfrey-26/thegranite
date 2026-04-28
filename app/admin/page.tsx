@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import API_Caller from "../src/api_caller";
-import { clearToken, getToken, getUser } from '@src/auth';
+import { clearToken, getToken, getUser } from "../src/auth";
 
 interface Stats {
   totalUsers: number;

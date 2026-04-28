@@ -3,16 +3,18 @@
  * */
 import {ReactNode} from "react"
 
-interface ContentProps{
-	children: ReactNode
-	className?: string
+interface ContentsProps
+{
+	children: ReactNode;
+	path : string;
 }
 
-export default function Content({children, className}: ContentProps)
+export default function Content({children} : ContentsProps) 
 {
+	
 	return(
-		  <div className={className}>
-		     {children}
-		  </div>
-		)
+	<>	
+	    {children} 
+	</> 
+	)
 }

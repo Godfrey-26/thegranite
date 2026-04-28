@@ -40,6 +40,7 @@ export default function Footer()
 		                              <li key={key}>
 		                                     <Link className="px-4" href={key}>
 		                                     <Image src={value}
+		                                     loading="eager"
 		                                     alt={key}
 		                                     width={18}
 		                                     height={18}

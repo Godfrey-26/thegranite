@@ -13,7 +13,7 @@ export default function Home() {
 
   return(
     <>
-         <Content classname="content-wrapper">
+         <Content>
             {/*Breaking News*/}
             {<BreakingNews />}
             {/*Trending stories*/}

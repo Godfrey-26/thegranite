@@ -73,15 +73,18 @@ export default function Footer() {
 
         {/* Extra Links */}
         <div>
-          <ul className="flex flex-wrap gap-4 text-sm">
-            {Object.entries(extraInfo).map(([key, value]) => (
-              <li key={key}>
-                <Link href={`/${key}`} className="hover:text-yellow-400 transition">
-                  {value}
-                </Link>
-              </li>
-            ))}
-          </ul>
+	          <ul className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4 text-sm">
+					  {Object.entries(footerLinks).map(([key, value]) => (
+					    <li key={key}>
+					      <Link
+					        href={`/${key}`}
+					        className="block hover:text-yellow-400 transition"
+					      >
+					        {value}
+					      </Link>
+					    </li>
+					  ))}
+			  </ul>
         </div>
 
         {/* Bottom Text */}

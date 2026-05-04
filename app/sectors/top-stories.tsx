@@ -77,7 +77,7 @@ export default function TopStories() {
                   <Image
                     src={featured.image_url}
                     alt={featured.image_alt || featured.title}
-                    width={600}
+                    width={500}
                     height={350}
                   />
                 </div>
@@ -87,7 +87,7 @@ export default function TopStories() {
 
           {/* Secondary stories row */}
           {rest.length > 0 && (
-            <div className="">
+            <div className="flex flex-row">
               {rest.slice(0, 3).map((story) => (
                 <div key={story.id} className="card px-3 pb-6 mb-3">
                   {story.image_url && (

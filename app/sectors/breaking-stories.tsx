@@ -68,7 +68,7 @@ export default function BreakingNews() {
                 <Image
                   src={article.image_url}
                   alt={article.image_alt || article.title}
-                  width={400}
+                  width={300}
                   height={200}
                   className="w-full h-auto object-cover"
                 />

@@ -55,39 +55,54 @@ export default function TopStories() {
 
           {/* Featured story */}
           {featured && (
-            <div className="card px-3 pt-6 grid grid-cols-2 custom-grid">
-              <div className="card-context">
-                <p className="px-3">
-                  <Link href={`/articles/${featured.slug}`} className="card-title text-left text-xl">
-                    {featured.title}
-                  </Link>
-                </p>
-                <p className="card-briefing px-3 text-left">
-                  {truncate(featured.excerpt || "", 250)}
-                </p>
-                <div className="time-line px-3 pt-6 pb-2 text-gray-500 text-sm">
-                  <span className="time pr-4">{featured.time_ago || "Recent"}</span>
-                  {featured.location && (
-                    <> | <span className="location pl-4">{featured.location}</span></>
-                  )}
+            <div className="card px-3 pt-6">
+              {/* Stack vertically on mobile, side-by-side on md+ */}
+              <div className="flex flex-col md:grid md:grid-cols-2 gap-4">
+                
+                {/* Text content — full width on mobile, left col on md+ */}
+                <div className="card-context order-2 md:order-1 flex flex-col justify-center">
+                  <p className="px-3">
+                    <Link
+                      href={`/articles/${featured.slug}`}
+                      className="card-title text-left text-base sm:text-lg md:text-xl font-semibold leading-snug break-words"
+                    >
+                      {featured.title}
+                    </Link>
+                  </p>
+                  <p className="card-briefing px-3 text-left text-sm sm:text-base mt-2 break-words">
+                    {truncate(featured.excerpt || "", 250)}
+                  </p>
+                  <div className="time-line px-3 pt-4 pb-2 text-gray-500 text-xs sm:text-sm">
+                    <span className="time pr-4">{featured.time_ago || "Recent"}</span>
+                    {featured.location && (
+                      <>
+                        <span>·</span>
+                        <span className="location pl-4">{featured.location}</span>
+                      </>
+                    )}
+                  </div>
                 </div>
+
+                {/* Image — full width on mobile, right col on md+ */}
+                {featured.image_url && (
+                  <div className="card-image order-1 md:order-2 relative w-full aspect-video md:aspect-[4/3] overflow-hidden rounded-lg">
+                    <Image
+                      src={featured.image_url}
+                      alt={featured.image_alt || featured.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+
               </div>
-              {featured.image_url && (
-                <div className="card-image">
-                  <Image
-                    src={featured.image_url}
-                    alt={featured.image_alt || featured.title}
-                    width={500}
-                    height={350}
-                  />
-                </div>
-              )}
             </div>
           )}
 
           {/* Secondary stories row */}
           {rest.length > 0 && (
-            <div className="flex flex-row md:flex-col">
+            <div className="flex flex-row sm:flex-col ">
               {rest.slice(0, 3).map((story) => (
                 <div key={story.id} className="card px-3 pb-6 mb-3">
                   {story.image_url && (

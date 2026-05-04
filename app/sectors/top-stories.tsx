@@ -51,7 +51,7 @@ export default function TopStories() {
       </div>
 
       <div className="grouped-grid-arrangement">
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1">
 
           {/* Featured story */}
           {featured && (

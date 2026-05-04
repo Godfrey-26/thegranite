@@ -7,7 +7,6 @@ import Image from 'next/image';
 import API_Caller from "../../src/api_caller";
 import { getUser } from "../../src/auth";
 
-
 interface ArticleCategory {
   id: number;
   name: string;
@@ -58,7 +57,6 @@ interface Article {
   more_from_author: string[];
 }
 
-
 function timeAgo(dateStr: string) {
   if (!dateStr) return '';
   const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 60000);
@@ -71,7 +69,6 @@ function timeAgo(dateStr: string) {
     day: 'numeric',
   });
 }
-
 
 export default function ArticlePage() {
   const params = useParams();
@@ -101,7 +98,6 @@ export default function ArticlePage() {
 
     fetchArticle();
     setUser(getUser());
-
     return () => { isMounted = false; };
   }, [params.slug]);
 
@@ -114,22 +110,14 @@ export default function ArticlePage() {
     setHasAccess(access);
   }, [article, user]);
 
-  if (loading) {
-    return <div className="px-3 pt-10 text-gray-500 text-sm">Loading article...</div>;
-  }
-
-  if (error) {
-    return <div className="px-3 pt-10 text-red-500 text-sm">Error: {error}</div>;
-  }
-
-  if (!article) {
-    return <div className="px-3 pt-10 text-gray-500 text-sm">Article not found.</div>;
-  }
+  if (loading) return <div className="px-3 pt-10 text-gray-500 text-sm">Loading article...</div>;
+  if (error) return <div className="px-3 pt-10 text-red-500 text-sm">Error: {error}</div>;
+  if (!article) return <div className="px-3 pt-10 text-gray-500 text-sm">Article not found.</div>;
 
   return (
     <div className="article-page max-w-4xl mx-auto px-3 sm:px-6 lg:px-8 py-8">
 
-      {/*Breadcrumb*/}
+      {/* Breadcrumb */}
       <nav className="text-xs text-gray-500 mb-6 flex items-center gap-2">
         <Link href="/" className="hover:underline">Home</Link>
         <span>/</span>
@@ -146,31 +134,23 @@ export default function ArticlePage() {
 
       <article>
 
-        {/*Badges*/}
+        {/* Badges */}
         <div className="flex flex-wrap gap-2 mb-4">
           {article.is_breaking && (
-            <span className="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded uppercase tracking-wide">
-              Breaking
-            </span>
+            <span className="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded uppercase tracking-wide">Breaking</span>
           )}
           {article.is_top_story && (
-            <span className="bg-blue-700 text-white text-xs font-bold px-2 py-1 rounded uppercase tracking-wide">
-              Top Story
-            </span>
+            <span className="bg-blue-700 text-white text-xs font-bold px-2 py-1 rounded uppercase tracking-wide">Top Story</span>
           )}
           {article.is_featured && (
-            <span className="bg-purple-700 text-white text-xs font-bold px-2 py-1 rounded uppercase tracking-wide">
-              Featured
-            </span>
+            <span className="bg-purple-700 text-white text-xs font-bold px-2 py-1 rounded uppercase tracking-wide">Featured</span>
           )}
           {article.is_premium && (
-            <span className="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-1 rounded">
-              Premium
-            </span>
+            <span className="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-1 rounded">Premium</span>
           )}
         </div>
 
-        {/* Header*/}
+        {/* Header */}
         <header className="mb-6">
           <h1 className="card-title text-left text-3xl sm:text-4xl font-bold leading-tight mb-4">
             {article.title}
@@ -219,18 +199,24 @@ export default function ArticlePage() {
           )}
         </header>
 
-        {/*Hero Image*/}
+        {/* ── Hero Image — fully responsive, true aspect ratio ── */}
         {article.image_url && (
           <figure className="mb-8">
-            <Image
-              src={article.image_url}
-              loading="eager"
-              alt={article.image_alt || article.title}
-              width={800}
-              height={600}
-              className="w-full h-auto object-cover rounded"
-              priority
-            />
+            {/* 
+              aspect-video = 16:9 ratio by default.
+              Change to aspect-[4/3] for 4:3, or aspect-square for 1:1.
+              The image fills the container and never distorts.
+            */}
+            <div className="relative w-full aspect-video rounded overflow-hidden">
+              <Image
+                src={article.image_url}
+                alt={article.image_alt || article.title}
+                fill                          // ← fills the aspect-ratio container
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 800px"
+                className="object-cover"      // ← covers without distorting
+                priority
+              />
+            </div>
             {(article.image_caption || article.image_credit) && (
               <figcaption className="card-briefing text-xs text-gray-500 mt-2 px-1">
                 {article.image_caption}
@@ -241,7 +227,7 @@ export default function ArticlePage() {
           </figure>
         )}
 
-        {/*Body or Paywall*/}
+        {/* Body or Paywall */}
         {hasAccess ? (
           <div className="article-body">
             {article.excerpt && (
@@ -249,12 +235,14 @@ export default function ArticlePage() {
                 {article.excerpt}
               </p>
             )}
-
             <div
-              className="prose prose-lg max-w-none text-gray-800 leading-relaxed"
+              className="prose prose-lg max-w-none text-gray-800 leading-relaxed
+                         [&_img]:w-full [&_img]:h-auto [&_img]:rounded [&_img]:my-6
+                         [&_figure]:my-6 [&_figure_img]:w-full [&_figure_img]:h-auto
+                         [&_video]:w-full [&_video]:h-auto [&_video]:rounded [&_video]:my-6
+                         [&_iframe]:w-full [&_iframe]:aspect-video [&_iframe]:rounded [&_iframe]:my-6"
               dangerouslySetInnerHTML={{ __html: article.body }}
             />
-
             {article.updated_at && article.updated_at !== article.published_at && (
               <p className="time-line text-xs text-gray-400 mt-10 pt-4 border-t border-gray-100">
                 Last updated: {timeAgo(article.updated_at)}
@@ -268,7 +256,6 @@ export default function ArticlePage() {
                 {article.excerpt}
               </p>
             )}
-
             <div className="bg-gray-100 rounded-lg p-8 text-center mt-4">
               <span className="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-1 rounded mb-4 inline-block">
                 Premium

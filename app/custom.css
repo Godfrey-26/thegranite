@@ -9,6 +9,7 @@
   background: rgba(0, 0, 0, 0.48);
 }
 
+
 .custom-grid .card-image{
     grid-row:1;
   }
@@ -60,7 +61,7 @@
   }
 
   .custom-grid .card-image{
-    grid-column:1;
+    grid-column:2;
     grid-row: 1;
   }
 }
@@ -83,7 +84,12 @@
 
   .custom-flex{
   flex-direction:row;
-}
+  }
+
+  .custom-grid .card-image{
+    grid-column:2;
+    grid-row: 1;
+  }
  
 }
 
@@ -104,5 +110,10 @@
   
   .custom-flex{
   flex-direction: row;
+  }
+
+  .custom-grid .card-image{
+    grid-column:2;
+    grid-row: 1;
   }
 }

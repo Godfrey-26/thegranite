@@ -39,7 +39,7 @@ export default function BreakingNews() {
       const data = await API_Caller(
         "GET",
         null,
-        "/articles/?is_breaking=true&page_size=6",
+        "/articles/?is_breaking=true&page_size=4",
         null
       );
 

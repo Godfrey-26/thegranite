@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import API_Caller from "../src/api_caller";
@@ -16,135 +16,176 @@ function timeAgo(dateStr: string) {
   return `${Math.floor(diff / 1440)}d ago`;
 }
 
+interface Article {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string;
+  image_url?: string;
+  image_alt?: string;
+  published_at: string;
+  category?: { name: string };
+}
+
 export default function BreakingNews() {
-  const [articles, setArticles] = useState<any[]>([]);
+  const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    let isMounted = true;
+  const fetchBreakingNews = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await API_Caller(
+        "GET",
+        null,
+        "/articles/?is_breaking=true&page_size=6",
+        null
+      );
 
-    const fetchBreakingNews = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await API_Caller("GET", null, "/articles/?is_breaking=true&page_size=6", null);
+      const results: Article[] = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.results)
+        ? data.results
+        : [];
 
-        // Handle paginated response shape: { results: [...] }
-        const results = Array.isArray(data)
-          ? data
-          : Array.isArray(data?.results)
-          ? data.results
-          : [];
-
-        if (isMounted) setArticles(results);
-      } catch (err: any) {
-        if (isMounted) setError(err?.message || "Failed to fetch breaking news");
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-
-    fetchBreakingNews();
-    return () => { isMounted = false; };
+      setArticles(results);
+    } catch (err: any) {
+      console.error("BreakingNews fetch error:", err);
+      setError(err?.message || "Failed to fetch breaking news");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  if (loading) return <div className="px-3 pt-6">Loading breaking news...</div>;
-  if (error) return <div className="px-3 pt-6 text-red-500">Error: {error}</div>;
-  if (articles.length === 0) return <div className="px-3 pt-6">No breaking news at the moment.</div>;
+  useEffect(() => {
+    fetchBreakingNews();
+  }, [fetchBreakingNews]);
 
-  const [featured, second, third, ...rest] = articles;
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 px-3 pt-6">
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="animate-pulse bg-gray-200 rounded h-48 w-full" />
+        ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="px-3 pt-6 text-red-500 flex flex-col gap-2">
+        <p>Error: {error}</p>
+        <button
+          onClick={fetchBreakingNews}
+          className="text-sm underline text-blue-500 w-fit"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  if (articles.length === 0) {
+    return <div className="px-3 pt-6">No breaking news at the moment.</div>;
+  }
+
+  // Layout: [0,1] = two small left cards | [2] = large center card | [3,4,5] = text-only right cards
+  const leftCards = articles.slice(0, 2);
+  const featuredCard = articles[2] ?? articles[0]; // fallback to first if less than 3
+  const textCards = articles.slice(3);
 
   return (
-    <div className="breaking-news grid-group-main">
+    <div className="breaking-news grid grid-cols-1 md:grid-cols-3 gap-4">
 
-      {/* ── Top row: two small cards ── */}
-      <div className="grid-group-main-item pt-6 divide-y divide-gray-500">
-
-        {[featured, second].filter(Boolean).map((article) => (
-          <div key={article.id} className="card px-3 pb-6 mb-3">
+      {/* ── Column 1: Two small cards ── */}
+      <div className="flex flex-col divide-y divide-gray-300">
+        {leftCards.map((article) => (
+          <div key={article.id} className="card px-3 py-4">
             {article.image_url && (
-              <div className="card-image">
+              <div className="mb-2">
                 <Image
                   src={article.image_url}
                   alt={article.image_alt || article.title}
                   width={400}
                   height={200}
-                  className="w-full h-auto object-cover"
+                  className="w-full h-auto object-cover rounded"
                 />
               </div>
             )}
-            <div className="card-context">
-              <p className="px-3">
-                <Link href={`/articles/${article.slug}`} className="card-title text-left text-base">
-                  {article.title}
-                </Link>
-              </p>
-              <p className="card-briefing px-3 text-left text-xs">
-                {truncate(article.excerpt, 80)}
-              </p>
-              <div className="time-line px-3 pt-3 pb-2 text-gray-500 text-xs">
-                <span className="time pr-4">{timeAgo(article.published_at)}</span>
-                {article.category?.name && (
-                  <> | <span className="location pl-4">{article.category.name}</span></>
-                )}
-              </div>
-            </div>
-          </div>
-        ))}
-
-      </div>
-
-      {/* ── Featured large card ── */}
-      {third && (
-        <div className="card px-3 pt-6 grid-group-main-item">
-          {third.image_url && (
-            <div className="card-image px-3">
-              <Image
-                src={third.image_url}
-                alt={third.image_alt || third.title}
-                width={620}
-                height={600}
-                className="w-full h-auto object-cover"
-              />
-            </div>
-          )}
-          <div className="card-context px-3">
-            <p className="px-3">
-              <Link href={`/articles/${third.slug}`} className="card-title text-left text-xl">
-                {third.title}
-              </Link>
+            <Link
+              href={`/articles/${article.slug}`}
+              className="card-title text-left text-base font-semibold hover:underline"
+            >
+              {article.title}
+            </Link>
+            <p className="card-briefing text-left text-xs text-gray-600 mt-1">
+              {truncate(article.excerpt, 80)}
             </p>
-            <p className="card-briefing px-3 text-left">
-              {truncate(third.excerpt, 250)}
-            </p>
-            <div className="time-line px-3 pt-4 pb-2 text-gray-500 text-xs">
-              <span className="time pr-4">{timeAgo(third.published_at)}</span>
-              {third.category?.name && (
-                <> | <span className="location pl-4">{third.category.name}</span></>
+            <div className="time-line pt-2 text-gray-500 text-xs">
+              <span>{timeAgo(article.published_at)}</span>
+              {article.category?.name && (
+                <span className="ml-2 pl-2 border-l border-gray-400">
+                  {article.category.name}
+                </span>
               )}
             </div>
           </div>
-        </div>
-      )}
+        ))}
+      </div>
 
-      {/* ── Text-only list cards ── */}
-      {rest.length > 0 && (
-        <div className="card px-3 flex flex-col grid-group-main-item divide-y divide-gray-500">
-          {rest.map((article) => (
-            <div key={article.id} className="card-context pt-4">
-              <p className="px-3">
-                <Link href={`/articles/${article.slug}`} className="card-title text-left text-base">
-                  {article.title}
-                </Link>
-              </p>
-              <p className="card-briefing px-3 text-left text-sm">
+      {/* ── Column 2: Featured large card ── */}
+      <div className="card px-3 py-4">
+        {featuredCard.image_url && (
+          <div className="mb-3">
+            <Image
+              src={featuredCard.image_url}
+              alt={featuredCard.image_alt || featuredCard.title}
+              width={620}
+              height={400}
+              className="w-full h-auto object-cover rounded"
+            />
+          </div>
+        )}
+        <Link
+          href={`/articles/${featuredCard.slug}`}
+          className="card-title text-left text-xl font-bold hover:underline"
+        >
+          {featuredCard.title}
+        </Link>
+        <p className="card-briefing text-left text-sm text-gray-600 mt-2">
+          {truncate(featuredCard.excerpt, 250)}
+        </p>
+        <div className="time-line pt-4 text-gray-500 text-xs">
+          <span>{timeAgo(featuredCard.published_at)}</span>
+          {featuredCard.category?.name && (
+            <span className="ml-2 pl-2 border-l border-gray-400">
+              {featuredCard.category.name}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* ── Column 3: Text-only list cards ── */}
+      {textCards.length > 0 && (
+        <div className="flex flex-col divide-y divide-gray-300">
+          {textCards.map((article) => (
+            <div key={article.id} className="card-context py-4 px-3">
+              <Link
+                href={`/articles/${article.slug}`}
+                className="card-title text-left text-base font-semibold hover:underline"
+              >
+                {article.title}
+              </Link>
+              <p className="card-briefing text-left text-sm text-gray-600 mt-1">
                 {truncate(article.excerpt, 150)}
               </p>
-              <div className="time-line px-3 pt-4 pb-2 text-gray-500 text-xs">
-                <span className="time pr-4">{timeAgo(article.published_at)}</span>
+              <div className="time-line pt-3 text-gray-500 text-xs">
+                <span>{timeAgo(article.published_at)}</span>
                 {article.category?.name && (
-                  <> | <span className="location pl-4">{article.category.name}</span></>
+                  <span className="ml-2 pl-2 border-l border-gray-400">
+                    {article.category.name}
+                  </span>
                 )}
               </div>
             </div>

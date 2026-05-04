@@ -167,31 +167,31 @@ export default function BreakingNews() {
       </div>
 
       {/* ── Column 3: Text-only list cards ── */}
-      {textCards.length > 0 && (
-        <div className="flex flex-col divide-y divide-gray-300">
-          {textCards.map((article) => (
-            <div key={article.id} className="card-context py-4 px-3">
-              <Link
-                href={`/articles/${article.slug}`}
-                className="card-title text-left text-base font-semibold hover:underline"
-              >
-                {article.title}
-              </Link>
-              <p className="card-briefing text-left text-sm text-gray-600 mt-1">
-                {truncate(article.excerpt, 150)}
-              </p>
-              <div className="time-line pt-3 text-gray-500 text-xs">
-                <span>{timeAgo(article.published_at)}</span>
-                {article.category?.name && (
-                  <span className="ml-2 pl-2 border-l border-gray-400">
-                    {article.category.name}
-                  </span>
-                )}
+        {textCards.length > 0 && (
+          <div className="flex flex-col divide-y divide-gray-300">
+            {textCards.map((article) => (
+              <div key={article.id} className="card-context py-4 px-3">
+                <Link
+                  href={`/articles/${article.slug}`}
+                  className="card-title text-left text-base font-semibold hover:underline"
+                >
+                  {article.title}
+                </Link>
+                <p className="card-briefing text-left text-sm text-gray-600 mt-1">
+                  {truncate(article.excerpt, 150)}
+                </p>
+                <div className="time-line pt-3 text-gray-500 text-xs">
+                  <span>{timeAgo(article.published_at)}</span>
+                  {article.category?.name && (
+                    <span className="ml-2 pl-2 border-l border-gray-400">
+                      {article.category.name}
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
 
     </div>
   );

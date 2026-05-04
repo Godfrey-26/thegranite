@@ -49,7 +49,7 @@ export default function BreakingNews() {
     return () => { isMounted = false; };
   }, []);
 
-  if (loading) return <div className="px-3 pt-6">Loading breaking news...</div>;
+  if (loading) return <div className="px-3 pt-6 text-sm text-gray-500 animate-pulse">Loading breaking news...</div>;
   if (error) return <div className="px-3 pt-6 text-red-500">Error: {error}</div>;
   if (articles.length === 0) return <div className="px-3 pt-6">No breaking news at the moment.</div>;
 

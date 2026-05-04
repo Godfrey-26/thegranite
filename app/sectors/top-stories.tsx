@@ -38,7 +38,7 @@ export default function TopStories() {
     return () => { isMounted = false; };
   }, []);
 
-  if (loading) return <div className="px-3 pt-6">Loading top stories...</div>;
+  if (loading) return <div className="px-3 pt-6 text-sm text-gray-500 animate-pulse">Loading top stories...</div>;
   if (error) return <div className="px-3 pt-6 text-red-500">Error: {error}</div>;
   if (topStories.length === 0) return <div className="px-3 pt-6">No top stories found.</div>;
 

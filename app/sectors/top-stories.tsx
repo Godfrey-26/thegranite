@@ -87,7 +87,7 @@ export default function TopStories() {
 
           {/* Secondary stories row */}
           {rest.length > 0 && (
-            <div className="flex flex-row custom-flex">
+            <div className="flex flex-row md:flex-col">
               {rest.slice(0, 3).map((story) => (
                 <div key={story.id} className="card px-3 pb-6 mb-3">
                   {story.image_url && (

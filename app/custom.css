@@ -10,7 +10,7 @@
 }
 
 .custom-grid .card-image{
-    grid-row:2;
+    grid-colmn:2;
   }
 
 .custom-flex{

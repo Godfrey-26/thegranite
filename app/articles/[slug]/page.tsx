@@ -271,9 +271,9 @@ export default function ArticlePage() {
                 <Image
                   src={article.image_url}
                   alt={article.image_alt || article.title}
-                  fill
+                  contain
                   priority
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 800px"
+                  sizes="(max-width: 640px) 90vw, (max-width: 1024px) 90vw, 800px"
                   className="object-cover"
                 />
               </div>

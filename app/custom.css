@@ -10,7 +10,7 @@
 }
 
 .custom-grid .card-image{
-    grid-colmn:2;
+    grid-row:1;
   }
 
 .custom-flex{
@@ -26,6 +26,7 @@
   .grouped-grid-arrangement {
     grid-template-columns: 1fr;
   }
+
 }
 
 /* Tablets portrait (768px+)*/
@@ -37,6 +38,7 @@
   .grouped-grid-arrangement {
     grid-template-columns: 2fr 1fr;
   }
+  
 }
 
 /*Tablets landscape / small laptops (1024px+) */
@@ -55,6 +57,11 @@
   
   .custom-flex{
   flex-direction: row;
+  }
+
+  .custom-grid .card-image{
+    grid-column:1;
+    grid-row: 1;
   }
 }
 

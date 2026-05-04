@@ -17,6 +17,8 @@ export default async function API_Caller(
 
   const requestHeaders: Record<string, string> = {
     'Content-Type': 'application/json',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Pragma': 'no-cache',
     ...(headers || {}),
   };
 
@@ -24,16 +26,15 @@ export default async function API_Caller(
     requestHeaders['Authorization'] = `Bearer ${authToken}`;
   }
 
-  // Handles both relative (/api/proxy) and absolute (https://...) base URLs
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-  const isRelative = baseUrl.startsWith('/');
-  const fullUrl = isRelative
-    ? `${typeof window !== 'undefined' ? window.location.origin : ''}/api/proxy${mapping}`
-    : `${baseUrl}${mapping}`;
 
   if (!baseUrl) {
     throw new Error('NEXT_PUBLIC_API_BASE_URL is not defined.');
   }
+
+  // Cache bust GET requests with a timestamp param
+  const cacheBuster = method === 'GET' ? `${mapping.includes('?') ? '&' : '?'}_t=${Date.now()}` : '';
+  const fullUrl = `${baseUrl}${mapping}${cacheBuster}`;
 
   let res: Response;
 
@@ -43,10 +44,16 @@ export default async function API_Caller(
       headers: requestHeaders,
       body: body ? JSON.stringify(body) : undefined,
       redirect: 'follow',
+      cache: 'no-store',
     });
-  } catch (networkError) {
+  } catch (networkError: any) {
     console.error('Network error:', networkError);
-    throw new Error('Could not reach the server.');
+    throw new Error(`Could not reach the server. ${networkError.message}`);
+  }
+
+  // Treat 304 as an error since our proxy should have prevented it
+  if (res.status === 304) {
+    throw new Error('Received 304 Not Modified - unexpected caching issue.');
   }
 
   const contentType = res.headers.get('content-type');

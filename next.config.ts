@@ -6,15 +6,28 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'api.thegranite.co.zw', // fixed - remove the markdown link format
+        hostname: 'api.thegranite.co.zw',
       },
     ],
+  },
+  async headers() {
+    return [
+      {
+        // Apply to all API proxy routes
+        source: '/api/proxy/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'no-cache, no-store, must-revalidate' },
+          { key: 'Pragma', value: 'no-cache' },
+          { key: 'Expires', value: '0' },
+        ],
+      },
+    ];
   },
   async rewrites() {
     return [
       {
         source: '/api/proxy/:path*',
-        destination: 'https://api.thegranite.co.zw/api/v1/:path*', // removed trailing slash - trailingSlash:true handles it
+        destination: '/api/proxy/:path*',
       },
     ];
   },

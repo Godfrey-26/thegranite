@@ -77,7 +77,7 @@ export default function TopStories() {
                   <Image
                     src={featured.image_url}
                     alt={featured.image_alt || featured.title}
-                    width={500}
+                    width={600}
                     height={350}
                   />
                 </div>

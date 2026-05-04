@@ -54,55 +54,36 @@ export default function TopStories() {
         <div className="grid grid-cols-1 gap-4">
 
           {/* Featured story */}
-              {featured && (
-                <div className="card px-3 pt-6 grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-                  
-                  {/* Image (shows on top in mobile, right on desktop) */}
-                  {featured.image_url && (
-                    <div className="card-image order-1 md:order-2 w-full">
-                      <Image
-                        src={featured.image_url}
-                        alt={featured.image_alt || featured.title}
-                        width={500}
-                        height={350}
-                        className="w-full h-auto object-cover rounded-lg"
-                      />
-                    </div>
+          {featured && (
+            <div className="card px-3 pt-6 custom-grid">
+              <div className="card-context">
+                <p className="px-3">
+                  <Link href={`/articles/${featured.slug}`} className="card-title text-left text-xl">
+                    {featured.title}
+                  </Link>
+                </p>
+                <p className="card-briefing px-3 text-left">
+                  {truncate(featured.excerpt || "", 250)}
+                </p>
+                <div className="time-line px-3 pt-6 pb-2 text-gray-500 text-sm">
+                  <span className="time pr-4">{featured.time_ago || "Recent"}</span>
+                  {featured.location && (
+                    <> | <span className="location pl-4">{featured.location}</span></>
                   )}
-
-                  {/* Content */}
-                  <div className="card-context order-2 md:order-1">
-                    <p className="px-3">
-                      <Link
-                        href={`/articles/${featured.slug}`}
-                        className="card-title text-left text-xl font-semibold hover:underline"
-                      >
-                        {featured.title}
-                      </Link>
-                    </p>
-
-                    <p className="card-briefing px-3 text-left mt-2">
-                      {truncate(featured.excerpt || "", 250)}
-                    </p>
-
-                    <div className="time-line px-3 pt-4 pb-2 text-gray-500 text-sm">
-                      <span className="time pr-4">
-                        {featured.time_ago || "Recent"}
-                      </span>
-
-                      {featured.location && (
-                        <>
-                          <span className="px-2">|</span>
-                          <span className="location pl-2">
-                            {featured.location}
-                          </span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-
+                </div>
+              </div>
+              {featured.image_url && (
+                <div className="card-image">
+                  <Image
+                    src={featured.image_url}
+                    alt={featured.image_alt || featured.title}
+                    width={500}
+                    height={350}
+                  />
                 </div>
               )}
+            </div>
+          )}
 
           {/* Secondary stories row */}
           {rest.length > 0 && (

@@ -44,6 +44,9 @@
   .custom-grid{
     grid-template-columns: 2fr 3fr;
   }
+  .custom-grid .card-image{
+    grid-row:1;
+  }
 
 }
 
@@ -62,6 +65,9 @@
   .custom-grid{
     grid-template-columns: 2fr 3fr;
   }
+  .custom-grid .card-image{
+    grid-row:1;
+  }
 }
 
 /*Wide screens (1536px+)*/
@@ -77,5 +83,8 @@
   }
   .custom-grid{
     grid-template-columns: 2fr 3fr;
+  }
+  .custom-grid .card-image{
+    grid-row:1;
   }
 }

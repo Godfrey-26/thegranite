@@ -55,17 +55,7 @@ export default function TopStories() {
 
           {/* Featured story */}
           {featured && (
-            <div className="card px-3 pt-6 grid grid-cols-2 sm:grid-cols-1 md:grid-cols-1">
-              {featured.image_url && (
-                <div className="card-image hidden sm:block md:block">
-                  <Image
-                    src={featured.image_url}
-                    alt={featured.image_alt || featured.title}
-                    width={500}
-                    height={350}
-                  />
-                </div>
-              )}
+            <div className="card px-3 pt-6 grid grid-cols-2 custom-grid">
               <div className="card-context">
                 <p className="px-3">
                   <Link href={`/articles/${featured.slug}`} className="card-title text-left text-xl">
@@ -83,7 +73,7 @@ export default function TopStories() {
                 </div>
               </div>
               {featured.image_url && (
-                <div className="card-image sm:hidden md:hidden">
+                <div className="card-image">
                   <Image
                     src={featured.image_url}
                     alt={featured.image_alt || featured.title}

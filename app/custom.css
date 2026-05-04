@@ -1,6 +1,6 @@
 /*Base (mobile first: < 480px)*/
 .grid-group-main,
-.grouped-grid-arrangement {
+.grouped-grid-arrangement, .custom-grid {
   display: grid;
   grid-template-columns: 1fr;
 }
@@ -40,6 +40,11 @@
   .grouped-grid-arrangement {
     grid-template-columns: 3fr 1fr;
   }
+
+  .custom-grid{
+    grid-template-columns: 2fr 3fr;
+  }
+
 }
 
 /*Desktops (1280px+)*/
@@ -53,6 +58,10 @@
     grid-template-columns: 3fr 1fr;
     gap: 1.5rem;
   }
+
+  .custom-grid{
+    grid-template-columns: 2fr 3fr;
+  }
 }
 
 /*Wide screens (1536px+)*/
@@ -65,5 +74,8 @@
   .grouped-grid-arrangement {
     grid-template-columns: 3fr 1fr;
     gap: 2rem;
+  }
+  .custom-grid{
+    grid-template-columns: 2fr 3fr;
   }
 }

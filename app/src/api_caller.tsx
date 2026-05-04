@@ -24,42 +24,40 @@ export default async function API_Caller(
     requestHeaders['Authorization'] = `Bearer ${authToken}`;
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+  // Handles both relative (/api/proxy) and absolute (https://...) base URLs
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+  const isRelative = baseUrl.startsWith('/');
+  const fullUrl = isRelative
+    ? `${typeof window !== 'undefined' ? window.location.origin : ''}/api/proxy${mapping}`
+    : `${baseUrl}${mapping}`;
 
   if (!baseUrl) {
-    throw new Error('NEXT_PUBLIC_API_BASE_URL is not defined. Check your environment variables.');
+    throw new Error('NEXT_PUBLIC_API_BASE_URL is not defined.');
   }
 
   let res: Response;
 
   try {
-    res = await fetch(`${baseUrl}${mapping}`, {
+    res = await fetch(fullUrl, {
       method,
       headers: requestHeaders,
       body: body ? JSON.stringify(body) : undefined,
       redirect: 'follow',
     });
   } catch (networkError) {
-    // Catches fetch failures: no internet, DNS failure, backend unreachable (e.g. localhost on Vercel)
-    console.error('Network error — is NEXT_PUBLIC_API_BASE_URL reachable?', networkError);
-    throw new Error(
-      'Could not reach the server. Make sure NEXT_PUBLIC_API_BASE_URL is set correctly in Vercel environment variables.'
-    );
+    console.error('Network error:', networkError);
+    throw new Error('Could not reach the server.');
   }
 
-  // Handle non-JSON responses (HTML error pages, proxy errors, CORS failures, etc.)
   const contentType = res.headers.get('content-type');
   if (!contentType || !contentType.includes('application/json')) {
     const text = await res.text();
     console.error(`Non-JSON response [${res.status}]:`, text);
-    throw new Error(
-      `Server returned a non-JSON response (status ${res.status}). Check your backend URL and CORS settings.`
-    );
+    throw new Error(`Server returned a non-JSON response (status ${res.status}).`);
   }
 
   const data = await res.json();
 
-  // Handle HTTP errors AFTER parsing JSON (so we can surface backend error messages)
   if (!res.ok) {
     console.error(`API error [${res.status}]:`, data);
     throw new Error(data?.message || data?.detail || data?.error || `API request failed with status ${res.status}`);

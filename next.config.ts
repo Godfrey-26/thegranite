@@ -1,13 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   trailingSlash: true,
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'api.thegranite.co.zw',
+        hostname: 'api.thegranite.co.zw', // fixed - remove the markdown link format
       },
     ],
   },
@@ -15,9 +14,9 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/proxy/:path*',
-        destination: 'https://api.thegranite.co.zw/api/v1/:path*/',
+        destination: 'https://api.thegranite.co.zw/api/v1/:path*', // removed trailing slash - trailingSlash:true handles it
       },
-    ]
+    ];
   },
 };
 

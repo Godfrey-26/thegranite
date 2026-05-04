@@ -54,7 +54,7 @@
   }
   
   .custom-flex{
-  flex-direction: column;
+  flex-direction: row;
   }
 }
 
@@ -75,7 +75,7 @@
   }
 
   .custom-flex{
-  flex-direction: column;
+  flex-direction:row;
 }
  
 }
@@ -96,6 +96,6 @@
   }
   
   .custom-flex{
-  flex-direction: column;
+  flex-direction: row;
   }
 }

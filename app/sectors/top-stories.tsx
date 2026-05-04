@@ -51,11 +51,11 @@ export default function TopStories() {
       </div>
 
       <div className="grouped-grid-arrangement">
-        <div className="grouped-grid-arrangement">
+        <div className="grid grid-cols-1 gap-4">
 
           {/* Featured story */}
           {featured && (
-            <div className="card px-3 pt-6 custom-grid">
+            <div className="card px-3 pt-6 grid grid-cols-2">
               <div className="card-context">
                 <p className="px-3">
                   <Link href={`/articles/${featured.slug}`} className="card-title text-left text-xl">

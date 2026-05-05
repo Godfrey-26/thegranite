@@ -55,7 +55,7 @@ export default function TopStories() {
 
           {/* Featured story */}
           {featured && (
-            <div className="card px-3 pt-6 grid grid-cols-2">
+            <div className="card px-3 pt-6 custom-grid">
               <div className="card-context">
                 <p className="px-3">
                   <Link href={`/articles/${featured.slug}`} className="card-title text-left text-xl">
@@ -77,7 +77,7 @@ export default function TopStories() {
                   <Image
                     src={featured.image_url}
                     alt={featured.image_alt || featured.title}
-                    width={500}
+                    width={650}
                     height={350}
                   />
                 </div>
@@ -87,16 +87,16 @@ export default function TopStories() {
 
           {/* Secondary stories row */}
           {rest.length > 0 && (
-            <div className="">
+            <div className="custom-flex pt-3 ">
               {rest.slice(0, 3).map((story) => (
-                <div key={story.id} className="card px-3 pb-6 mb-3">
+                <div key={story.id} className="card px-3 pb-6 mb-3 card-sec-img">
                   {story.image_url && (
-                    <div className="card-image">
+                    <div className="card-image flex items-center">
                       <Image
                         src={story.image_url}
                         alt={story.image_alt || story.title}
                         width={310}
-                        height={200}
+                        height={250}
                       />
                     </div>
                   )}

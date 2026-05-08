@@ -14,7 +14,7 @@ export default function SignIn() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
@@ -47,7 +47,7 @@ export default function SignIn() {
         <div>
           <h2 className="text-center text-3xl font-bold tracking-tight text-slate-900">Sign in to The Granite</h2>
           <p className="mt-2 text-center text-sm text-slate-600">
-            Use your existing backend account credentials to access the news service.
+            Use your existing account credentials to access the news service.
           </p>
         </div>
 

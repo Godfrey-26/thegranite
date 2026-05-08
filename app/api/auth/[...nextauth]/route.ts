@@ -30,19 +30,19 @@ const handler = NextAuth({
 
           console.log("LOGIN RESPONSE:", res);
 
-          // 🚨 Handle backend error response
+          // Handle backend error response
           if (!res || res.status === "error") {
             throw new Error(res?.message || "Invalid login credentials");
           }
 
-          // 🚨 Django may return different shapes
+          //  Django may return different shapes
           const user = res.user ?? res;
 
           if (!user || !user.email) {
             throw new Error("Invalid user response from server");
           }
 
-          // ✅ Return NextAuth user object
+          //  Return NextAuth user object
           return {
             id: user.id || user.email,
             email: user.email,
@@ -86,7 +86,7 @@ const handler = NextAuth({
     signIn: "/auth/signin",
   },
 
-  debug: true, // 🔥 helps you see real errors in dev
+  debug: true, // helps you see real errors in dev
 });
 
 export { handler as GET, handler as POST };

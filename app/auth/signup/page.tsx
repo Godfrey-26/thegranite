@@ -12,7 +12,7 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
@@ -45,7 +45,7 @@ export default function SignUp() {
         </div>
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
-            <label className="block text-sm font-medium text-slate-700">Full Name</label>
+            <label className="block text-sm font-medium text-slate-700">Full Name or username</label>
             <input
               id="name"
               name="name"
